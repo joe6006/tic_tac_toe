@@ -49,25 +49,21 @@ int main()
         cout << "please input 2 numbers 0-2. the first input will be the row and the second will be the column." << endl;
         cout << "This is how you will input your wanted position." << endl;
 
-        cin >> row >> col;
+        
 
-        //input bool for this small do while check to make sure user input is valid
-        // and to keep random generator from posting O until input is valid
-        bool input = false;
-
-        do
-        {
+        //while loop to check user input
+        
+            cin>>row>>col;
+            
             if (row < 0 || row > 2 || col < 0 || col > 2)
             {
-                cout << "invalid input" << endl;
+                bool input = true;
+                do{
+                cout << "invalid input try again" << endl;
                 cin >> row >> col;
-            }
-            else
-            {
-                input = true;
-                break;
-            }
-        } while (input);
+                }while(!input);
+            
+        };
 
         if (row >= 0 && row < 3 && col >= 0 && col < 3)
         {
@@ -75,16 +71,16 @@ int main()
             {
                 grid[row][col] = 'X';
             }
-            else if (grid[row][col] == 'X')
+            else if (grid[row][col] == 'X' || grid[row][col] == 'O')
             {
-                cout << "spot is taken";
+                cout << "spot is taken"<<endl;
             }
-        }
+        };
 
-        if (grid[int_dist(gen)][int_dist(gen)] != 'X' && cin)
+        if (grid[int_dist(gen)][int_dist(gen)] == ' ' && cin)
         {
             grid[int_dist(gen)][int_dist(gen)] = 'O';
-        }
+        };
 
         bool winner = false;
 
@@ -100,14 +96,14 @@ int main()
                 cout << "you won";
                 winner = true;
             }
-        }
+        };
 
         if (grid[0][0] == 'X' && grid[1][1] == 'X' && grid[2][2] == 'X' ||
             grid[0][2] == 'X' && grid[1][1] == 'X' && grid[2][0] == 'X')
         {
             cout << "you won";
             winner = true;
-        }
+        };
 
         if (winner == true)
         {
