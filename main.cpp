@@ -1,4 +1,7 @@
 #include <iostream>
+#include <random>
+#include <limits>
+
 using namespace std;
 #include <random>
 
@@ -8,30 +11,24 @@ int main()
     char grid[3][3] = {
         {' ', ' ', ' '},
         {' ', ' ', ' '},
-        {' ', ' ', ' '}};
+        {' ', ' ', ' '}
+    };
 
-    // intialize row and col
-    int row, col = 0;
+    int row = 0;
+    int col = 0;
 
-    // random generator so that a random O can be put in an empty space after the user X input
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> int_dist(0, 2);
 
-
-    // making a do-while loop to start game until there is a winner
-    do
+    while (true)
     {
-        //creating borders bewtween around the empty space grid to make the border using
-        //nested for-loop
         for (row = 0; row < 3; row++)
         {
-            if (row < 3)
-                std::cout << row << "| ";
+            cout << row << "| ";
 
             for (col = 0; col < 3; col++)
             {
-
                 cout << " " << grid[row][col] << " ";
 
                 if (col < 2)
@@ -40,47 +37,43 @@ int main()
 
             cout << '\n';
             if (row < 2)
-                cout << "   " << "---+---+---\n";
+                cout << "   ---+---+---\n";
         }
 
-        cout << "   " << "-----------\n";
+        cout << "   -----------\n";
         cout << "    0 | 1 | 2\n";
-        //get user input for row and column
         cout << "please input 2 numbers 0-2. the first input will be the row and the second will be the column." << endl;
         cout << "This is how you will input your wanted position." << endl;
 
-        
-
-        //while loop to check user input
-        
-            cin>>row>>col;
-            
-            if (row < 0 || row > 2 || col < 0 || col > 2)
-            {
-                bool input = true;
-                do{
-                cout << "invalid input try again" << endl;
-                cin >> row >> col;
-                }while(!input);
-            
-        };
-
-        if (row >= 0 && row < 3 && col >= 0 && col < 3)
+        do
         {
-            if (grid[row][col] == ' ')
+            if (!(cin >> row >> col))
             {
-                grid[row][col] = 'X';
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                row = -1;
+                col = -1;
             }
-            else if (grid[row][col] == 'X' || grid[row][col] == 'O')
-            {
-                cout << "spot is taken"<<endl;
-            }
-        };
+        } while (row < 0 || row > 2 || col < 0 || col > 2);
 
-        if (grid[int_dist(gen)][int_dist(gen)] == ' ' && cin)
+        if (grid[row][col] != ' ')
         {
-            grid[int_dist(gen)][int_dist(gen)] = 'O';
-        };
+            cout << "spot is taken" << endl;
+            continue;
+        }
+
+        grid[row][col] = 'X';
+
+        int computerRow = int_dist(gen);
+        int computerCol = int_dist(gen);
+
+        while (grid[computerRow][computerCol] != ' ')
+        {
+            computerRow = int_dist(gen);
+            computerCol = int_dist(gen);
+        }
+
+        grid[computerRow][computerCol] = 'O';
 
         bool winner = false;
 
@@ -93,23 +86,54 @@ int main()
             }
             else if (grid[0][i] == 'X' && grid[1][i] == 'X' && grid[2][i] == 'X')
             {
-                cout << "you won";
+                cout << "you won" << endl;
                 winner = true;
             }
-        };
 
-        if (grid[0][0] == 'X' && grid[1][1] == 'X' && grid[2][2] == 'X' ||
-            grid[0][2] == 'X' && grid[1][1] == 'X' && grid[2][0] == 'X')
+            if (grid[i][0] == 'O' && grid[i][1] == 'O' && grid[i][2] == 'O')
+            {
+                cout << "Computer Wins" << endl;
+                winner = true;
+            }
+            else if (grid[0][i] == 'O' && grid[1][i] == 'O' && grid[2][i] == 'O')
+            {
+                cout << "Computer Wins" << endl;
+                winner = true;
+            }
+        }
+
+        if ((grid[0][0] == 'X' && grid[1][1] == 'X' && grid[2][2] == 'X') ||
+            (grid[0][2] == 'X' && grid[1][1] == 'X' && grid[2][0] == 'X'))
         {
-            cout << "you won";
+            cout << "you won" << endl;
             winner = true;
-        };
+        }else if((grid[0][0] == 'O' && grid[1][1] == 'O' && grid[2][2] == 'O') ||
+            (grid[0][2] == 'O' && grid[1][1] == 'O' && grid[2][0] == 'O')){
+                cout<<"Computer Wins";
+                winner = true;
+            };
 
-        if (winner == true)
+        if (winner)
         {
+            cout << "\nWinning board:\n";
+            for (int row = 0; row < 3; row++)
+            {
+                cout << row << "| ";
+                for (int col = 0; col < 3; col++)
+                {
+                    cout << " " << grid[row][col] << " ";
+                    if (col < 2)
+                        cout << "|";
+                }
+                cout << '\n';
+                if (row < 2)
+                    cout << "   ---+---+---\n";
+            }
+            cout << "   -----------\n";
+            cout << "    0 | 1 | 2\n";
             break;
         }
-    } while (true);
+    }
 
     return 0;
 }
